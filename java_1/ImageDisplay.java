@@ -35,9 +35,9 @@ class ImagePanel extends JPanel {
         this.img = img;
     }
 
-    //描画処理ようのメソッド
+    //描画処理用のメソッド
     public void paintComponent(Graphics g) {
-        //super.paintComponent(g); // 基本の描画を行うための呼び出し
+        super.paintComponent(g); // 基本の描画を行うための呼び出し
         // 画像をパネル上に描画。
         g.drawImage(img, 0, 0, null);
     }
