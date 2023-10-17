@@ -33,5 +33,6 @@ def display_grayscale_image_and_histogram(input_path):
     plt.show()
 
 # 使用例
-input_file_path = "path_to_your_image.jpg"
+input_file_path = "/Users/kiyotakoki/dev/com_vis/grayscale/pokemon_rowlet.png"
+
 display_grayscale_image_and_histogram(input_file_path)
