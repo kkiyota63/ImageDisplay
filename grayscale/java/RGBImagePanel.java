@@ -67,10 +67,13 @@ public class RGBImagePanel extends JPanel {
 				bufImage.setRGB(x, y, (255 << 24) | (gray << 16) | (gray << 8) | gray);
 			}
 		}
-		
 	}
 
+	/**
+	 * 画像のヒストグラムを計算。
+	 */
 	public void computeHistogram() {
+		//画像の各ピクセルの赤色の値（0から255まで）を取得して、それに基づいてヒストグラムを計算
 		for (int y = 0; y < bufImage.getHeight(); y++) {
 			for (int x = 0; x < bufImage.getWidth(); x++) {
 				int color = bufImage.getRGB(x, y);
@@ -81,10 +84,11 @@ public class RGBImagePanel extends JPanel {
 	}
 
 	/**
- * ヒストグラムを描画します。
- * @param g Graphicsオブジェクト
- */
+ 	* ヒストグラムを描画。
+ 	* @param g Graphicsオブジェクト
+ 	*/
 	public void drawHistogram(Graphics g) {
+		//ストグラムの中で最も高い棒の高さを見つけるために、最大頻度を計算
 		int maxFrequency = 0;
 		for (int i = 0; i < histogram.length; i++) {
 			if (histogram[i] > maxFrequency) {
@@ -95,28 +99,11 @@ public class RGBImagePanel extends JPanel {
 		int histWidth = width;
 		int histHeight = 200;  // ヒストグラムの高さは200ピクセルとする
 
+		//描画。棒の高さは、それぞれの赤色の値の頻度に基づいてスケール
 		for (int i = 0; i < histogram.length; i++) {
 			int barHeight = (int) ((double) histogram[i] / maxFrequency * histHeight);
+			//g.drawLineを使用して、ヒストグラムの各棒を線として描画
 			g.drawLine(i, histHeight, i, histHeight - barHeight);
-		}
-	}
-
-
-	/**
- * ヒストグラムをCSVファイルに出力します。
- * @param filename 出力するCSVファイルの名前
- */
-	public void exportHistogramToCSV(String filename) {
-		try (FileWriter writer = new FileWriter(filename)) {
-			// CSVのヘッダーを書き込む
-			writer.append("Gray Value, Frequency\n");
-			
-			// ヒストグラムのデータを書き込む
-			for (int i = 0; i < histogram.length; i++) {
-				writer.append(String.valueOf(i)).append(",").append(String.valueOf(histogram[i])).append("\n");
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
 		}
 	}
 
