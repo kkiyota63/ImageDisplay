@@ -109,27 +109,41 @@ public class RGBImagePanel extends JPanel {
 		}
 	}
 
-	// 画像の各ピクセルをグレースケールに変換し、閾値を32として2値化
-	public void convertToBinary() {
-		final int THRESHOLD = 32;
-		for (int y = 0; y < bufImage.getHeight(); y++) {
-			for (int x = 0; x < bufImage.getWidth(); x++) {
-				int color = bufImage.getRGB(x, y);
-				double r = (double) getRed(color);
-				double g = (double) getGreen(color);
-				double b = (double) getBlue(color);
-				int gray = (int) (0.299 * r + 0.587 * g + 0.114 * b);
+/**
+ * この関数は、画像の各ピクセルをグレースケールに変換し、
+ * 一定の閾値を基にその画像を2値化します。
+ */
+public void convertToBinary() {
+    // 2値化する際の閾値を設定。この例では32を閾値として使用。
+    final int THRESHOLD = 32;
 
-				// 2値化
-				if (gray > THRESHOLD) {
-					gray = 255;
-				} else {
-					gray = 0;
-				}
-				bufImage.setRGB(x, y, (255 << 24) | (gray << 16) | (gray << 8) | gray);
-			}
-		}
-	}
+    // 画像の各ピクセルを順番に処理するための2重ループ。
+    for (int y = 0; y < bufImage.getHeight(); y++) {
+        for (int x = 0; x < bufImage.getWidth(); x++) {
+            // 現在のピクセルのRGB値を取得。
+            int color = bufImage.getRGB(x, y);
+
+            // RGB値から各色の成分を取得。
+            double r = (double) getRed(color);
+            double g = (double) getGreen(color);
+            double b = (double) getBlue(color);
+
+            // RGB値を使用してグレースケール値を計算。この式は標準的なRGBからグレースケールへの変換式です。
+            int gray = (int) (0.299 * r + 0.587 * g + 0.114 * b);
+
+            // グレースケール値が閾値より大きい場合は白(255)に、それ以外の場合は黒(0)に変更。
+            if (gray > THRESHOLD) {
+                gray = 255;
+            } else {
+                gray = 0;
+            }
+
+            // 計算した2値のグレースケール値を現在のピクセルに設定。
+            bufImage.setRGB(x, y, (255 << 24) | (gray << 16) | (gray << 8) | gray);
+        }
+    }
+}
+
 	
 
 	/**
