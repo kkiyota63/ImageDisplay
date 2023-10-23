@@ -67,6 +67,8 @@ public class RGBImagePanel extends JPanel {
 				bufImage.setRGB(x, y, (255 << 24) | (gray << 16) | (gray << 8) | gray);
 			}
 		}
+
+		
 	}
 
 	/**
@@ -107,6 +109,29 @@ public class RGBImagePanel extends JPanel {
 		}
 	}
 
+	// 画像の各ピクセルをグレースケールに変換し、閾値を32として2値化
+	public void convertToBinary() {
+		final int THRESHOLD = 32;
+		for (int y = 0; y < bufImage.getHeight(); y++) {
+			for (int x = 0; x < bufImage.getWidth(); x++) {
+				int color = bufImage.getRGB(x, y);
+				double r = (double) getRed(color);
+				double g = (double) getGreen(color);
+				double b = (double) getBlue(color);
+				int gray = (int) (0.299 * r + 0.587 * g + 0.114 * b);
+
+				// 2値化
+				if (gray > THRESHOLD) {
+					gray = 255;
+				} else {
+					gray = 0;
+				}
+				bufImage.setRGB(x, y, (255 << 24) | (gray << 16) | (gray << 8) | gray);
+			}
+		}
+	}
+	
+
 	/**
 	 * 与えられたImageをBufferedImageに変換します。
 	 * @param img 変換するImage
@@ -146,6 +171,19 @@ public class RGBImagePanel extends JPanel {
 		g.translate(0, height);
 		drawHistogram(g);
 	}
+
+	//2値変換用のメソッド
+	// public void paint(Graphics g) {
+	// 	super.paint(g);  // 背景などのデフォルトの描画を行うための呼び出し
+	// 	convertToBinary();  // 2値化の処理を行う
+	// 	g.drawImage(bufImage, 0, 0, this);
+		
+	// 	computeHistogram();
+
+	// 	// 画像の下部にヒストグラムを描画
+	// 	g.translate(0, height);
+	// 	drawHistogram(g);
+	// }
 	
 
 
