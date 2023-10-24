@@ -68,7 +68,7 @@ public class RGBImagePanel extends JPanel {
 		// 	}
 		// }
 
-		//特定の色を抽出する(色相フィルタ)
+		//特定の色を抽出する
 		for (int y = 0; y < bufImage.getHeight(); y++) {
             for (int x = 0; x < bufImage.getWidth(); x++) {
                 int color = bufImage.getRGB(x, y);
@@ -88,9 +88,6 @@ public class RGBImagePanel extends JPanel {
                 }
             }
         }
-
-		//空間フィルタ
-		
 	}
 
 	/**
