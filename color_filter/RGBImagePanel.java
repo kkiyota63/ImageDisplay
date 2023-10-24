@@ -32,62 +32,61 @@ public class RGBImagePanel extends JPanel {
 		// 画像をBufferedImageに変換
 		bufImage = createBufferedImage(image);
 
-		// 画像の各ピクセルの色を反転
-		// for (int y = 0; y < bufImage.getHeight(); y++) {
-		// 	for (int x = 0; x < bufImage.getWidth(); x++) {
-		// 		int color = bufImage.getRGB(x, y);  // 現在のピクセルの色を取得
-		// 		int r = 255 - getRed(color);   // 赤成分の反転
-		// 		int g = 255 - getGreen(color); // 緑成分の反転
-		// 		int b = 255 - getBlue(color);  // 青成分の反転
-		// 		// 反転された色をBufferedImageに設定
-		// 		bufImage.setRGB(x, y, 255 << 24 | r << 16 | g << 8 | b);
-		// 	}
-		// }
-
-		// 画像の各ピクセルから緑成分のみを抽出
-		// for (int y = 0; y < bufImage.getHeight(); y++) {
-		// 	for (int x = 0; x < bufImage.getWidth(); x++) {
-		// 		int color = bufImage.getRGB(x, y);  // 現在のピクセルの色を取得
-		// 		int r = 0;               // 赤成分は0に
-		// 		int g = getGreen(color); // 緑成分をそのまま
-		// 		int b = 0;               // 青成分は0に
-		// 		// 抽出された色をBufferedImageに設定
-		// 		bufImage.setRGB(x, y, 255 << 24 | r << 16 | g << 8 | b);
-		// 	}
-		// }
-
-		// 画像の各ピクセルをグレースケールに変換
-		// for (int y = 0; y < bufImage.getHeight(); y++) {
-		// 	for (int x = 0; x < bufImage.getWidth(); x++) {
-		// 		int color = bufImage.getRGB(x, y);
-		// 		double r = (double) getRed(color);
-		// 		double g = (double) getGreen(color);
-		// 		double b = (double) getBlue(color);
-		// 		int gray = (int) (0.299 * r + 0.587 * g + 0.114 * b);
-		// 		bufImage.setRGB(x, y, (255 << 24) | (gray << 16) | (gray << 8) | gray);
-		// 	}
-		// }
-
+	
 		//特定の色を抽出する
-		for (int y = 0; y < bufImage.getHeight(); y++) {
-            for (int x = 0; x < bufImage.getWidth(); x++) {
-                int color = bufImage.getRGB(x, y);
-                int r = getRed(color);
-                int g = getGreen(color);
-                int b = getBlue(color);
+		// for (int y = 0; y < bufImage.getHeight(); y++) {
+        //     for (int x = 0; x < bufImage.getWidth(); x++) {
+        //         int color = bufImage.getRGB(x, y);
+        //         int r = getRed(color);
+        //         int g = getGreen(color);
+        //         int b = getBlue(color);
                 
-                float[] hsb = Color.RGBtoHSB(r, g, b, null);
+        //         float[] hsb = Color.RGBtoHSB(r, g, b, null);
     
-                // 色相の範囲を0.10から0.20から0.08から0.22に広げます。
-                // また、彩度と明度も考慮します。
-                if (hsb[0] >= 0.1 && hsb[0] <= 0.15 && hsb[1] > 0.4 && hsb[2] > 0.2) {
-                    // 色をそのまま保持
-                } else {
-                    // 色を白に変更します
-                    bufImage.setRGB(x, y, Color.WHITE.getRGB());
-                }
-            }
-        }
+        //         // 色相の範囲を0.10から0.20から0.08から0.22に広げます。
+        //         // また、彩度と明度も考慮します。
+        //         if (hsb[0] >= 0.1 && hsb[0] <= 0.15 && hsb[1] > 0.4 && hsb[2] > 0.2) {
+        //             // 色をそのまま保持
+        //         } else {
+        //             // 色を白に変更します
+        //             bufImage.setRGB(x, y, Color.WHITE.getRGB());
+        //         }
+        //     }
+        // }
+
+
+		//平滑化フィルタ
+		// double[][] kernel = {
+        //     {0.11, 0.11, 0.11},
+        //     {0.11, 0.11, 0.11},
+        //     {0.11, 0.11, 0.11}
+        // };
+
+		//ガウシアンフィルタ
+		double[][] kernel = {
+            {0.0625, 0.125, 0.0625},
+            {0.125, 0.25, 0.125},
+            {0.0625, 0.125, 0.0625}
+        };
+
+		for (int h = 1; h < height-1; h++) {
+			for (int w = 1; w < width-1; w++) {
+				double value = 0.0;
+				for (int ky = -1; ky < 2; ky++) {
+					for (int kx = -1; kx < 2; kx++) {
+						double color = getRed(bufImage.getRGB(w+kx, h+ky));
+						value += kernel[kx+1][ky+1] * color;
+					}
+				}
+				int gray = (int)value;
+				if (gray < 0) gray = 0;
+				if (gray > 255) gray = 255;
+				bufImage.setRGB(w, h, 255<<24 | gray<<16 | gray<<8 | gray);
+			}
+		}
+		
+
+
 	}
 
 	/**
@@ -190,35 +189,11 @@ public void convertToBinary() {
 	public int getBlue(int color) {
 		return color & 0xff;
 	}
-
-	// @Override
-	// public void paint(Graphics g) {
-	// 	super.paint(g);  // 背景などのデフォルトの描画を行うための呼び出し
-	// 	g.drawImage(bufImage, 0, 0, this);
-		
-	// 	computeHistogram();
-
-	// 	// 画像の下部にヒストグラムを描画
-	// 	g.translate(0, height);
-	// 	drawHistogram(g);
-	// }
-
-	//2値変換用のメソッド
-	// public void paint(Graphics g) {
-	// 	super.paint(g);  // 背景などのデフォルトの描画を行うための呼び出し
-	// 	convertToBinary();  // 2値化の処理を行う
-	// 	g.drawImage(bufImage, 0, 0, this);
-		
-	// 	computeHistogram();
-
-	// 	// 画像の下部にヒストグラムを描画
-	// 	g.translate(0, height);
-	// 	drawHistogram(g);
-	// }
 	
     public void paint(Graphics g) {
         super.paint(g);
         g.drawImage(bufImage, 0, 0, this);
+		
         
         computeHistogram();
         g.translate(0, height);
