@@ -67,12 +67,9 @@ public class RGBImagePanel extends JPanel {
 		// 		bufImage.setRGB(x, y, (255 << 24) | (gray << 16) | (gray << 8) | gray);
 		// 	}
 		// }
-		
-	}
 
-
-    public void filterYellowColor() {
-        for (int y = 0; y < bufImage.getHeight(); y++) {
+		//特定の色を抽出する
+		for (int y = 0; y < bufImage.getHeight(); y++) {
             for (int x = 0; x < bufImage.getWidth(); x++) {
                 int color = bufImage.getRGB(x, y);
                 int r = getRed(color);
@@ -91,7 +88,7 @@ public class RGBImagePanel extends JPanel {
                 }
             }
         }
-    }
+	}
 
 	/**
 	 * 画像のヒストグラムを計算。
@@ -223,7 +220,6 @@ public void convertToBinary() {
 	
     public void paint(Graphics g) {
         super.paint(g);
-        filterYellowColor();
         g.drawImage(bufImage, 0, 0, this);
         
         computeHistogram();
