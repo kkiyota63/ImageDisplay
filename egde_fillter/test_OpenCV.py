@@ -4,7 +4,7 @@ import cv2
 print(cv2.__version__)
 
 #画像を読み込む
-img = cv2.imread("test.jpg")
+img = cv2.imread("sakurajima.jpeg")
 
 #ウィンドウの名前を設定
 cv2.namedWindow("image")
