@@ -79,27 +79,56 @@ public class RGBImagePanel extends JPanel {
         // };
 
 		//ラプラシアンフィルタ
-		double[][] kernel = {
-		    {1, 1, 1},
-		    {1, -8, 1},
-		    {1, 1, 1}
-		};
+		// double[][] kernel = {
+		//     {1, 1, 1},
+		//     {1, -8, 1},
+		//     {1, 1, 1}
+		// };
+
+		// for (int h = 1; h < height-1; h++) {
+		// 	for (int w = 1; w < width-1; w++) {
+		// 		double value = 0.0;
+		// 		for (int ky = -1; ky < 2; ky++) {
+		// 			for (int kx = -1; kx < 2; kx++) {
+		// 				double color = getRed(bufImage.getRGB(w+kx, h+ky));
+		// 				value += kernel[kx+1][ky+1] * color;
+		// 			}
+		// 		}
+		// 		int gray = (int)value;
+		// 		if (gray < 0) gray = 0;
+		// 		if (gray > 255) gray = 255;
+		// 		bufImage.setRGB(w, h, 255<<24 | gray<<16 | gray<<8 | gray);
+		// 	}
+		// }
+		
+		int threshold = 128; // 2値化のしきい値
 
 		for (int h = 1; h < height-1; h++) {
 			for (int w = 1; w < width-1; w++) {
 				double value = 0.0;
-				for (int ky = -1; ky < 2; ky++) {
-					for (int kx = -1; kx < 2; kx++) {
-						double color = getRed(bufImage.getRGB(w+kx, h+ky));
-						value += kernel[kx+1][ky+1] * color;
+				// ラプラシアンフィルタのカーネル
+				int[][] laplacianKernel = {
+					{1,  1, 1},
+					{1, -8, 1},
+					{1,  1, 1}
+				};
+				for (int ky = -1; ky <= 1; ky++) {
+					for (int kx = -1; kx <= 1; kx++) {
+						double color = getRed(bufImage.getRGB(w + kx, h + ky));
+						value += laplacianKernel[ky + 1][kx + 1] * color;
 					}
 				}
-				int gray = (int)value;
+				int gray = (int) value;
 				if (gray < 0) gray = 0;
 				if (gray > 255) gray = 255;
-				bufImage.setRGB(w, h, 255<<24 | gray<<16 | gray<<8 | gray);
+				
+				// 2値化
+				int binary = gray < threshold ? 0 : 255;
+				
+				bufImage.setRGB(w, h, 255 << 24 | binary << 16 | binary << 8 | binary);
 			}
 		}
+
 		
 
 
