@@ -101,6 +101,8 @@ public class RGBImagePanel extends JPanel {
 			}
 		}
 		
+
+		
 	}
 
 	/**
