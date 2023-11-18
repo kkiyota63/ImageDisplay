@@ -5,7 +5,7 @@ import cv2
 from matplotlib import pyplot as plt
 
 # 画像をグレースケールで読み込む
-img = cv2.imread('sakurajima.jpeg',0)
+img = cv2.imread('/Users/kiyotakoki/dev/com_vis/07_DFT/sakurajima.jpeg',0)
 
 # DFT
 dft = cv2.dft(np.float32(img),flags = cv2.DFT_COMPLEX_OUTPUT)
@@ -18,8 +18,13 @@ magnitude_spectrum = 20*np.log(cv2.magnitude(dft_shift[:,:,0],dft_shift[:,:,1]))
 # 画像のサイズ，中心座標
 rows, cols = img.shape
 crow,ccol = int(rows/2) , int(cols/2)
-mask = np.zeros((rows,cols,2),np.uint8)
-mask[crow-30:crow+30, ccol-30:ccol+30] = 1
+#ローパスフィルタのマスク　（中心から30x30の領域を通す）
+# mask = np.zeros((rows,cols,2),np.uint8)
+# mask[crow-30:crow+30, ccol-30:ccol+30] = 1
+
+# ハイパスフィルタのマスク　（中心から30x30の領域を通さない）
+mask = np.ones((rows,cols,2),np.uint8)
+mask[crow-30:crow+30, ccol-30:ccol+30] = 0
 
 # フィルタ適用
 filtered_dft_shift = dft_shift*mask         

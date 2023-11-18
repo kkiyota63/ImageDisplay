@@ -5,7 +5,7 @@ import cv2
 from matplotlib import pyplot as plt
 
 # 画像をグレースケールで読み込む
-img = cv2.imread('sakurajima.jpeg',0)
+img = cv2.imread('/Users/kiyotakoki/dev/com_vis/07_DFT/sakurajima.jpeg',0)
 
 # DFT
 dft = cv2.dft(np.float32(img),flags = cv2.DFT_COMPLEX_OUTPUT)
