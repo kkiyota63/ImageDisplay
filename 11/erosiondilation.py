@@ -3,12 +3,12 @@ import numpy as np
 
 #縮小
 def erosion(img):
-    #４近傍が0の場合に0に、それ以外は1にする
+    #8近傍が0の場合に0に、それ以外は1にする
     h, w = img.shape
     out = np.zeros((h, w), dtype=float)
     for y in range(1, h-1):
         for x in range(1, w-1):
-            if img[y-1, x] == 0 or img[y, x-1] == 0 or img[y, x+1] == 0 or img[y+1, x] == 0:
+            if img[y-1, x] == 0 or img[y, x-1] == 0 or img[y, x+1] == 0 or img[y+1, x] == 0 or img[y-1, x-1] == 0 or img[y-1, x+1] == 0 or img[y+1, x-1] == 0 or img[y+1, x+1] == 0:
                 out[y, x] = 0
             else:
                 out[y, x] = 1
@@ -16,7 +16,7 @@ def erosion(img):
 
 #膨張
 def dilation(img):
-    #４近傍が1の場合に1に、それ以外は0にする
+    #4近傍が1の場合に1に、それ以外は0にする
     h, w = img.shape
     out = np.zeros((h, w), dtype=float)
     for y in range(1, h-1):
@@ -26,6 +26,8 @@ def dilation(img):
             else:
                 out[y, x] = 0
     return out
+
+
 
 
 # 画像を読み込む
